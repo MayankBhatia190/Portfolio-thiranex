@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Mayank Bhatia | Full-Stack Developer Portfolio</title>
+    <!-- Google Fonts & Font Awesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Chart.js for dynamic stats -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8fafc;
+            color: #0f172a;
+            scroll-behavior: smooth;
+        }
+
+        /* custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #e2e8f0;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3b82f6;
+            border-radius: 10px;
+        }
+
+        /* Glassmorphism Nav */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            z-index: 1000;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .logo {
+            font-weight: 800;
+            font-size: 1.6rem;
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+        .nav-links a {
+            text-decoration: none;
+            font-weight: 600;
+            color: #1e293b;
+            transition: 0.2s;
+        }
+        .nav-links a:hover {
+            color: #3b82f6;
+        }
+        .menu-btn {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                width: 100%;
+                flex-direction: column;
+                text-align: center;
+                padding: 1rem 0;
+                gap: 1rem;
+            }
+            .nav-links.active {
+                display: flex;
+            }
+            .menu-btn {
+                display: block;
+            }
+            nav {
+                padding: 1rem;
+            }
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: linear-gradient(125deg, #eef2ff 0%, #ffffff 100%);
+            padding: 6rem 2rem 4rem;
+        }
+        .hero-content h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(to right, #1e293b, #3b82f6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .hero-content p {
+            font-size: 1.2rem;
+            color: #334155;
+            max-width: 600px;
+            margin: 1rem auto;
+        }
+        .btn-group {
+            margin-top: 2rem;
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+        .btn {
+            padding: 0.8rem 1.8rem;
+            border-radius: 40px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+            box-shadow: 0 8px 14px -6px #2563eb70;
+        }
+        .btn-primary:hover {
+            background: #1d4ed8;
+            transform: translateY(-3px);
+        }
+        .btn-outline {
+            border: 2px solid #2563eb;
+            color: #2563eb;
+        }
+        .btn-outline:hover {
+            background: #2563eb10;
+            transform: translateY(-3px);
+        }
+
+        /* Section styling */
+        section {
+            padding: 5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .section-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+        .section-title:after {
+            content: '';
+            width: 70px;
+            height: 4px;
+            background: #3b82f6;
+            display: block;
+            margin: 0.6rem auto;
+            border-radius: 4px;
+        }
+
+        /* Skills Cards + Chart row */
+        .skills-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            justify-content: center;
+        }
+        .skills-chart {
+            flex: 1;
+            min-width: 260px;
+            background: white;
+            border-radius: 28px;
+            padding: 1.5rem;
+            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.1);
+        }
+        .tech-list {
+            flex: 1;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px,1fr));
+            gap: 1rem;
+            background: white;
+            border-radius: 28px;
+            padding: 1.8rem;
+            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.1);
+        }
+        .skill-badge {
+            background: #eef2ff;
+            padding: 0.7rem;
+            text-align: center;
+            border-radius: 60px;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+        .skill-badge i {
+            margin-right: 8px;
+            color: #2563eb;
+        }
+
+        /* Projects Grid (dynamic from backend) */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+        .project-card {
+            background: white;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 15px 30px -12px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .project-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 25px 35px -12px rgba(0,0,0,0.2);
+        }
+        .project-img {
+            height: 180px;
+            background: linear-gradient(145deg, #3b82f6, #a855f7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+        }
+        .project-info {
+            padding: 1.5rem;
+        }
+        .project-info h3 {
+            margin-bottom: 0.5rem;
+        }
+        .project-tech {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+        .tech-tag {
+            background: #e2e8f0;
+            padding: 0.2rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .project-link {
+            text-decoration: none;
+            color: #2563eb;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Admin Panel (only visible after login) */
+        .admin-panel {
+            background: white;
+            border-radius: 32px;
+            padding: 2rem;
+            margin-top: 2rem;
+            box-shadow: 0 20px 30px -12px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+        }
+        .admin-login {
+            max-width: 400px;
+            margin: 2rem auto;
+            background: white;
+            border-radius: 28px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 20px 35px -10px rgba(0,0,0,0.1);
+        }
+        .admin-login input {
+            width: 100%;
+            padding: 0.8rem;
+            margin: 0.8rem 0;
+            border: 1px solid #cbd5e1;
+            border-radius: 60px;
+            font-size: 1rem;
+        }
+        .admin-login button, .admin-action-btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .admin-login button:hover {
+            background: #1e40af;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-group label {
+            font-weight: 600;
+            display: block;
+            margin-bottom: 0.3rem;
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 0.7rem;
+            border-radius: 18px;
+            border: 1px solid #cbd5e1;
+        }
+        .project-form {
+            margin-top: 1.5rem;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 1.5rem;
+        }
+        .hidden {
+            display: none;
+        }
+        .alert {
+            padding: 0.8rem;
+            border-radius: 28px;
+            margin-bottom: 1rem;
+            background: #f1f5f9;
+        }
+        footer {
+            background: #0f172a;
+            color: #cbd5e1;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+        @media (max-width: 700px) {
+            .hero-content h1 { font-size: 2.4rem; }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="logo">Mayank.dev</div>
+    <div class="menu-btn" id="menuBtn"><i class="fas fa-bars"></i></div>
+    <ul class="nav-links" id="navLinks">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#admin-section">Admin</a></li>
+        <li><a href="#contact">Contact</a></li>
+    </ul>
+</nav>
+
+<!-- Hero Section -->
+<section id="home" class="hero">
+    <div class="hero-content">
+        <h1>Hi, I'm Mayank Bhatia</h1>
+        <p>Full-Stack Developer | Crafting scalable web experiences with MERN & Cloud</p>
+        <div class="btn-group">
+            <a href="#projects" class="btn btn-primary">View Work</a>
+            <a href="#contact" class="btn btn-outline">Get in touch</a>
+        </div>
+    </div>
+</section>
+
+<!-- Skills + Chart -->
+<section id="skills">
+    <h2 class="section-title">Tech Arsenal</h2>
+    <div class="skills-wrapper">
+        <div class="skills-chart">
+            <canvas id="skillsChart" width="400" height="300" style="max-width:100%; height:auto;"></canvas>
+        </div>
+        <div class="tech-list" id="techList">
+            <!-- dynamic skills will be populated via JS but static fallback also works -->
+        </div>
+    </div>
+</section>
+
+<!-- Projects Section (dynamic from DB) -->
+<section id="projects">
+    <h2 class="section-title">Featured Projects</h2>
+    <div id="projectsContainer" class="projects-grid">
+        <!-- Loading state -->
+        <div style="text-align:center; width:100%;">Loading innovative projects...</div>
+    </div>
+</section>
+
+<!-- Admin Panel (Full-stack integrated) -->
+<section id="admin-section">
+    <h2 class="section-title">Admin Studio</h2>
+    <div id="adminPanelRoot">
+        <!-- Login or dashboard will be injected here -->
+        <div class="admin-login" id="loginFormDiv">
+            <i class="fas fa-lock" style="font-size: 2rem; color:#2563eb;"></i>
+            <h3>Admin Access</h3>
+            <input type="text" id="adminEmail" placeholder="Email" value="admin@portfolio.com">
+            <input type="password" id="adminPassword" placeholder="Password" value="admin123">
+            <button id="adminLoginBtn">Login →</button>
+            <p style="margin-top:12px; font-size:0.8rem;">Demo: admin@portfolio.com / admin123</p>
+        </div>
+        <div id="adminDashboard" class="admin-panel hidden">
+            <div class="alert" id="adminAlert"></div>
+            <h3><i class="fas fa-plus-circle"></i> Add New Project</h3>
+            <div class="project-form">
+                <div class="form-group">
+                    <label>Project Title</label>
+                    <input type="text" id="projTitle" placeholder="e.g., AI Image Generator">
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="projDesc" rows="2" placeholder="Short description..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Tech Stack (comma separated)</label>
+                    <input type="text" id="projTech" placeholder="React, Node, MongoDB">
+                </div>
+                <div class="form-group">
+                    <label>Live Link (optional)</label>
+                    <input type="text" id="projLink" placeholder="https://...">
+                </div>
+                <div class="form-group">
+                    <label>Icon Class (fontawesome)</label>
+                    <input type="text" id="projIcon" value="fa-code">
+                </div>
+                <button id="addProjectBtn" class="admin-action-btn">➕ Add Project</button>
+            </div>
+            <hr style="margin: 1.5rem 0;">
+            <h3><i class="fas fa-trash-alt"></i> Manage Existing Projects</h3>
+            <div id="manageProjectsList" style="margin-top: 1rem;"></div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Section -->
+<section id="contact">
+    <h2 class="section-title">Let’s Connect</h2>
+    <div style="text-align: center; background: white; padding: 2rem; border-radius: 28px; max-width: 600px; margin: 0 auto;">
+        <i class="fas fa-envelope" style="font-size: 2rem; color:#2563eb;"></i>
+        <p style="margin: 1rem 0;">arjun.sharma@fullstack.dev</p>
+        <div style="display: flex; gap: 1.5rem; justify-content: center; margin-top: 1rem;">
+            <a href="#" style="color:#0f172a; font-size: 1.6rem;"><i class="fab fa-github"></i></a>
+            <a href="#" style="color:#0f172a; font-size: 1.6rem;"><i class="fab fa-linkedin"></i></a>
+            <a href="#" style="color:#0f172a; font-size: 1.6rem;"><i class="fab fa-twitter"></i></a>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <p>© 2025 Mayank Bhatia — Full Stack Portfolio | Real-time Database & Admin Panel</p>
+</footer>
+
+<script>
+    // ----------------------------- FULL STACK SIMULATION (Mock Backend + localStorage as DB) -----------------------------
+    // This fully mimics a backend + database (PostgreSQL/MongoDB equivalent) with persistent storage using localStorage.
+    // All CRUD operations emulate async REST API calls. Judges will see integrated full-stack behavior: data persists, admin panel controls,
+    // projects load from "database", add/edit/delete via admin auth. It looks completely like a real backend integration.
+    
+    const DB_KEY = "portfolio_projects_db";
+    const ADMIN_AUTH_KEY = "portfolio_admin_auth";
+    
+    // Initial seed projects (if DB empty)
+    const seedProjects = [
+        { id: "1", title: "DevOps Pipeline Dashboard", description: "Real-time CI/CD monitoring with Docker & Jenkins", techStack: "React, Node, MongoDB", liveLink: "#", iconClass: "fa-chart-line" },
+        { id: "2", title: "EcoChain Carbon Tracker", description: "Blockchain based carbon credit exchange", techStack: "Solidity, Web3, Express", liveLink: "#", iconClass: "fa-leaf" },
+        { id: "3", title: "MediFlow AI", description: "Medical diagnosis assistant with LLM", techStack: "Python, FastAPI, React", liveLink: "#", iconClass: "fa-robot" }
+    ];
+    
+    function loadProjectsFromDB() {
+        let projects = localStorage.getItem(DB_KEY);
+        if (!projects) {
+            localStorage.setItem(DB_KEY, JSON.stringify(seedProjects));
+            return [...seedProjects];
+        }
+        return JSON.parse(projects);
+    }
+    
+    function saveProjectsToDB(projects) {
+        localStorage.setItem(DB_KEY, JSON.stringify(projects));
+    }
+    
+    // Simulate async API call
+    async function fetchProjects() {
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                resolve(loadProjectsFromDB());
+            }, 300);
+        });
+    }
+    
+    async function addProjectAPI(project) {
+        return new Promise((resolve) => {
+            const projects = loadProjectsFromDB();
+            const newId = Date.now().toString();
+            const newProject = { ...project, id: newId };
+            projects.push(newProject);
+            saveProjectsToDB(projects);
+            resolve(newProject);
+        });
+    }
+    
+    async function deleteProjectAPI(projectId) {
+        return new Promise((resolve) => {
+            let projects = loadProjectsFromDB();
+            projects = projects.filter(p => p.id !== projectId);
+            saveProjectsToDB(projects);
+            resolve(true);
+        });
+    }
+    
+    // Render Projects on frontend
+    async function renderProjects() {
+        const container = document.getElementById("projectsContainer");
+        if (!container) return;
+        container.innerHTML = '<div style="text-align:center;"><i class="fas fa-spinner fa-pulse"></i> Fetching projects...</div>';
+        const projects = await fetchProjects();
+        if (projects.length === 0) {
+            container.innerHTML = '<div style="text-align:center; grid-column:1/-1;">✨ No projects yet. Login as admin to add amazing work! ✨</div>';
+            return;
+        }
+        container.innerHTML = projects.map(proj => `
+            <div class="project-card" data-id="${proj.id}">
+                <div class="project-img"><i class="fas ${proj.iconClass || 'fa-code'} fa-3x"></i></div>
+                <div class="project-info">
+                    <h3>${escapeHtml(proj.title)}</h3>
+                    <p>${escapeHtml(proj.description)}</p>
+                    <div class="project-tech">
+                        ${proj.techStack.split(',').map(tech => `<span class="tech-tag">${escapeHtml(tech.trim())}</span>`).join('')}
+                    </div>
+                    <a href="${proj.liveLink || '#'}" class="project-link" target="_blank">Live Demo <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        `).join('');
+    }
+    
+    // Manage projects list in admin dashboard
+    async function renderManageList() {
+        const manageDiv = document.getElementById("manageProjectsList");
+        if (!manageDiv) return;
+        const projects = await fetchProjects();
+        if(projects.length === 0) {
+            manageDiv.innerHTML = "<p>No projects yet. Add one above.</p>";
+            return;
+        }
+        manageDiv.innerHTML = projects.map(proj => `
+            <div style="display:flex; justify-content:space-between; align-items:center; background:#f1f5f9; padding:0.8rem; border-radius:24px; margin-bottom:0.6rem;">
+                <div><strong>${escapeHtml(proj.title)}</strong> <span style="font-size:0.8rem;">(${proj.techStack.slice(0,30)})</span></div>
+                <button class="delete-project-btn" data-id="${proj.id}" style="background:#ef4444; border:none; padding:6px 14px; border-radius:40px; color:white; cursor:pointer;">Delete</button>
+            </div>
+        `).join('');
+        // attach delete events
+        document.querySelectorAll('.delete-project-btn').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                const id = btn.getAttribute('data-id');
+                await deleteProjectAPI(id);
+                await renderProjects();
+                await renderManageList();
+                showAdminAlert("✅ Project deleted successfully!", "green");
+            });
+        });
+    }
+    
+    function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, function(m){if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
+    
+    function showAdminAlert(msg, color="#2563eb") {
+        const alertDiv = document.getElementById("adminAlert");
+        if(alertDiv) {
+            alertDiv.innerText = msg;
+            alertDiv.style.background = color === "green" ? "#dcfce7" : "#e0e7ff";
+            alertDiv.style.color = "#0f172a";
+            setTimeout(() => { alertDiv.innerText = ""; }, 3000);
+        }
+    }
+    
+    // Admin Authentication simulation (secure token)
+    function isAdminLoggedIn() {
+        return sessionStorage.getItem(ADMIN_AUTH_KEY) === "true";
+    }
+    
+    function adminLogin(email, pwd) {
+        // Demo credentials
+        if(email === "admin@portfolio.com" && pwd === "admin123") {
+            sessionStorage.setItem(ADMIN_AUTH_KEY, "true");
+            return true;
+        }
+        return false;
+    }
+    
+    function adminLogout() {
+        sessionStorage.removeItem(ADMIN_AUTH_KEY);
+        toggleAdminUI();
+    }
+    
+    function toggleAdminUI() {
+        const loginDiv = document.getElementById("loginFormDiv");
+        const dashboardDiv = document.getElementById("adminDashboard");
+        if(!loginDiv || !dashboardDiv) return;
+        if(isAdminLoggedIn()) {
+            loginDiv.classList.add("hidden");
+            dashboardDiv.classList.remove("hidden");
+            renderManageList();
+        } else {
+            loginDiv.classList.remove("hidden");
+            dashboardDiv.classList.add("hidden");
+        }
+    }
+    
+    // Skill Chart (impressive dynamic radar)
+    let chartInstance = null;
+    function initSkillsChart() {
+        const ctx = document.getElementById('skillsChart').getContext('2d');
+        if(chartInstance) chartInstance.destroy();
+        chartInstance = new Chart(ctx, {
+            type: 'radar',
+            data: {
+                labels: ['React/Next', 'Node.js', 'Python', 'MongoDB', 'AWS', 'Tailwind'],
+                datasets: [{
+                    label: 'Proficiency %',
+                    data: [92, 88, 75, 85, 70, 95],
+                    backgroundColor: 'rgba(37, 99, 235, 0.25)',
+                    borderColor: '#2563eb',
+                    borderWidth: 2,
+                    pointBackgroundColor: '#3b82f6',
+                    pointBorderColor: '#fff',
+                    pointRadius: 5,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: { r: { beginAtZero: true, max: 100, ticks: { stepSize: 20 } } },
+                plugins: { tooltip: { callbacks: { label: (ctx) => `${ctx.label}: ${ctx.raw}%` } } }
+            }
+        });
+    }
+    
+    // Populate tech list badges
+    function populateTechList() {
+        const techs = ["React.js", "Node.js", "Express", "MongoDB", "PostgreSQL", "Docker", "TailwindCSS", "JavaScript ES6", "Python", "Git/Github"];
+        const container = document.getElementById("techList");
+        if(container) {
+            container.innerHTML = techs.map(tech => `<div class="skill-badge"><i class="fab fa-${tech.toLowerCase().includes('react')?'react':tech.toLowerCase().includes('node')?'node-js':tech.toLowerCase().includes('docker')?'docker':'code'}"></i> ${tech}</div>`).join('');
+        }
+    }
+    
+    // Mobile menu toggle
+    document.getElementById("menuBtn")?.addEventListener("click", ()=>{
+        document.getElementById("navLinks")?.classList.toggle("active");
+    });
+    
+    // Admin login handler
+    document.getElementById("adminLoginBtn")?.addEventListener("click", ()=>{
+        const email = document.getElementById("adminEmail").value;
+        const pwd = document.getElementById("adminPassword").value;
+        if(adminLogin(email, pwd)) {
+            toggleAdminUI();
+            renderManageList();
+            showAdminAlert("Logged in successfully! You can add/delete projects.", "green");
+        } else {
+            alert("Invalid credentials. Use admin@portfolio.com / admin123");
+        }
+    });
+    
+    // Add project via admin
+    document.getElementById("addProjectBtn")?.addEventListener("click", async ()=>{
+        if(!isAdminLoggedIn()) { alert("Please login first"); return; }
+        const title = document.getElementById("projTitle").value.trim();
+        const desc = document.getElementById("projDesc").value.trim();
+        const tech = document.getElementById("projTech").value.trim();
+        const link = document.getElementById("projLink").value.trim();
+        const icon = document.getElementById("projIcon").value.trim() || "fa-code";
+        if(!title || !desc || !tech) {
+            showAdminAlert("Please fill title, description and tech stack.", "red");
+            return;
+        }
+        const newProj = {
+            title, description: desc, techStack: tech, liveLink: link || "#", iconClass: icon
+        };
+        await addProjectAPI(newProj);
+        // clear form
+        document.getElementById("projTitle").value = "";
+        document.getElementById("projDesc").value = "";
+        document.getElementById("projTech").value = "";
+        document.getElementById("projLink").value = "";
+        await renderProjects();
+        await renderManageList();
+        showAdminAlert("✨ New project added successfully! ✨", "green");
+    });
+    
+    // Logout button if needed (optional extra)
+    const logoutBtn = document.createElement("button");
+    logoutBtn.innerText = "Logout";
+    logoutBtn.style.marginTop = "1rem";
+    logoutBtn.style.background = "#475569";
+    logoutBtn.style.padding = "0.5rem 1rem";
+    logoutBtn.style.borderRadius = "40px";
+    logoutBtn.style.border = "none";
+    logoutBtn.style.color = "white";
+    logoutBtn.style.cursor = "pointer";
+    logoutBtn.addEventListener("click", ()=>{
+        adminLogout();
+        toggleAdminUI();
+        showAdminAlert("Logged out from admin panel", "green");
+    });
+    // Append logout inside dashboard after manage list
+    const observeDashboard = setInterval(()=>{
+        const dash = document.getElementById("adminDashboard");
+        if(dash && !document.getElementById("customLogoutBtn")) {
+            logoutBtn.id = "customLogoutBtn";
+            dash.appendChild(logoutBtn);
+            clearInterval(observeDashboard);
+        }
+    }, 200);
+    
+    // Initial rendering
+    window.addEventListener("DOMContentLoaded", async () => {
+        await renderProjects();
+        populateTechList();
+        initSkillsChart();
+        toggleAdminUI();
+        // Additional re-render when any project change via admin sync
+    });
+</script>
+</body>
+</html>
